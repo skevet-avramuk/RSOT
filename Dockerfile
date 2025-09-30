@@ -18,11 +18,9 @@ COPY . .
 #########################
 # Stage 3: final
 #########################
-FROM gcr.io/distroless/nodejs20-debian12
+FROM node:20-alpine
 WORKDIR /app
 USER 65532:65532
-
-# Копируем готовый билд
 COPY --from=build /app /app
 
 # Экспонируем порт из задания
@@ -41,8 +39,9 @@ ENV STU_ID=1 \
     STU_VARIANT=v01 \
     PORT=8081
 
-# Healthcheck через Node.js скрипт
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD ["node", "src/healthcheck.js"]
+# Healthcheck через curl
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD ["curl", "-f", "http://localhost:8081/health"]
 
 # Запуск сервера
-ENTRYPOINT ["node", "src/server.js"]
+ENTRYPOINT ["node","src/server.js"]
