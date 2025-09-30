@@ -1,4 +1,5 @@
 node_modules
 .git
-*.log
-*.tmp
+**/*.log
+**/*.tmp
+**/.DS_Store

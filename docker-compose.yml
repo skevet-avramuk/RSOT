@@ -1,25 +1,40 @@
 version: "3.9"
+
 services:
   redis:
     image: redis:7-alpine
-    container_name: redis
+    container_name: redis-feis-1-v01
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
-      - data_v1:/data
+      - data-feis-1-v01:/data
+    restart: unless-stopped
+    labels:
+      org.bstu.owner: "your-github-username"
+      org.bstu.student.slug: "feis-1-v01"
 
   app:
-    image: express-redis-app:v1
-    container_name: express-app
+    image: express-lr01:stu-1-v01
+    container_name: app-feis-1-v01
     ports:
       - "8081:8081"
     environment:
       - PORT=8081
-      - GREETING=Привет из Docker+Redis!
+      - STU_ID=1
+      - STU_GROUP=feis
+      - STU_VARIANT=v01
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
       - redis
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "src/healthcheck.js"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    labels:
+      org.bstu.owner: "your-github-username"
+      org.bstu.student.slug: "feis-1-v01"
 
 volumes:
-  data_v1:
+  data-feis-1-v01:

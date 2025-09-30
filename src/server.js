@@ -1,46 +1,46 @@
-const express = require("express");
-const { createClient } = require("redis");
+import express from "express";
+import process from "process";
 
 const app = express();
 
+// Конфигурация через ENV
 const PORT = process.env.PORT || 8081;
-const GREETING = process.env.GREETING || "Hello from Express+Redis!";
-const REDIS_HOST = process.env.REDIS_HOST || "redis";
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
+const STU_ID = process.env.STU_ID || "1";
+const STU_GROUP = process.env.STU_GROUP || "feis";
+const STU_VARIANT = process.env.STU_VARIANT || "v01";
 
-const redis = createClient({ url: `redis://${REDIS_HOST}:${REDIS_PORT}` });
+// Health endpoint
+app.get("/health", (req, res) => res.status(200).send("OK"));
 
-redis.on("error", (err) => console.error("Redis Client Error", err));
+// Readiness endpoint (можно добавить, если потребуется)
+app.get("/ready", (req, res) => res.status(200).send("READY"));
 
-(async () => {
-  await redis.connect();
-})();
-
-// Главный маршрут с подсчётом визитов
-app.get("/", async (req, res) => {
-  await redis.incr("visits");
-  const visits = await redis.get("visits");
-  res.send(`${GREETING}\nVisits: ${visits}\n`);
+// Пример простого логирования запроса
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
 });
 
-// Healthcheck endpoint
-app.get("/health", async (req, res) => {
-  try {
-    await redis.ping();
-    res.json({ status: "ok" });
-  } catch {
-    res.status(500).json({ status: "unhealthy" });
-  }
+// Запуск сервера
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server started on port ${PORT}`);
+  console.log(`Student ID: ${STU_ID}, Group: ${STU_GROUP}, Variant: ${STU_VARIANT}`);
 });
 
 // Graceful shutdown
-const server = app.listen(PORT, () => console.log(`Server on port ${PORT}`));
-
-process.on("SIGTERM", async () => {
-  console.log("SIGTERM received: shutting down gracefully");
-  server.close(async () => {
-    await redis.quit();
-    console.log("Shutdown complete");
+const shutdown = () => {
+  console.log("⚡ SIGTERM received. Shutting down gracefully...");
+  server.close(() => {
+    console.log("✅ Server closed.");
     process.exit(0);
   });
-});
+
+  // Форсированный выход через 5 секунд
+  setTimeout(() => {
+    console.error("❌ Force exit.");
+    process.exit(1);
+  }, 5000);
+};
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
