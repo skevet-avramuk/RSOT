@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - data_v1:/data
+
+  app:
+    image: express-redis-app:v1
+    container_name: express-app
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+      - GREETING=Привет из Docker+Redis!
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  data_v1:
