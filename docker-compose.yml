@@ -7,7 +7,7 @@ services:
       - data-feis-1-v01:/data
     restart: unless-stopped
     labels:
-      org.bstu.owner: "your-github-username"
+      org.bstu.owner: "skevet-avramuk"
       org.bstu.student.slug: "feis-1-v01"
 
   app:
@@ -31,7 +31,7 @@ services:
       timeout: 3s
       retries: 3
     labels:
-      org.bstu.owner: "your-github-username"
+      org.bstu.owner: "skevet-avramuk"
       org.bstu.student.slug: "feis-1-v01"
 
 volumes:
