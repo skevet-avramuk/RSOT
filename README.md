@@ -20,7 +20,7 @@ This project is a minimal Node/Express server with Redis integration, Dockerized
 ## 1. Clone the repository
 
 ```bash
-git clone https://github.com/<skevet-avramuk>/RSOT.git
+git clone https://github.com/skevet-avramuk/RSOT.git
 cd RSOT
 ```
 
