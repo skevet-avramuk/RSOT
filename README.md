@@ -9,43 +9,63 @@
 - Дата выполнения - 30.09.2025
 - ОС (версия), версия Docker Desktop/Engine - Windows 11, Docker version 27.4.0
 
-# Запуск проекта
+---
 
-1. Клонирование репозитория:
+# RSOT Project
 
-- git clone https://github.com/<твой-логин>/RSOT.git
-- cd RSOT
+This project is a minimal Node/Express server with Redis integration, Dockerized for easy setup.
 
-2. Сборка и запуск контейнеров:
+---
 
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/<skevet-avramuk>/RSOT.git
+cd RSOT
+```
+
+## 2. Build and start containers
+
+```bash
 - docker compose up -d --build
+```
 
-3. Проверка работы приложения:
+## 3. Verify the application
 
-## Healthcheck
+### 3.1 Healthcheck
 
-- Invoke-RestMethod http://localhost:8081/health
-  или
-- curl http://localhost:8081/health
+```bash
+Invoke-RestMethod http://localhost:8081/health
+# or
+curl http://localhost:8081/health
+```
 
-Ожидаемый результат: OK
+Expected output: OK
 
-## Readiness
+### 3.2 Readiness
 
-- Invoke-RestMethod http://localhost:8081/ready
+```bash
+Invoke-RestMethod http://localhost:8081/ready
+```
 
-Ожидаемый результат: READY
+Expected output: READY
 
-## Redis
+## 3.3 Redis
 
-- curl http://localhost:8081/visit
+```bash
+curl http://localhost:8081/visit
+```
 
-Ожидаемый результат: Количество визитов: 1
+Expected output: Количество визитов: 1 (increments with each request)
 
-4. Остановка и удаление контейнеров:
+## 4. Stop and remove containers
 
-- docker compose down
+```bash
+docker compose down
+```
 
-Если нужно удалить тома данных Redis, необходимо добавить -v:
+If you need to remove Redis data volumes as well, add -v:
 
-- docker compose down -v
+```bash
+docker compose down -v
+```
